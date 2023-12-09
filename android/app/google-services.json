@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "815623217079",
+    "project_id": "noise-app-d9229",
+    "storage_bucket": "noise-app-d9229.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815623217079:android:ea7d8bb05632bfb0429232",
+        "android_client_info": {
+          "package_name": "com.example.futa_noise_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNxsvAYGqAqxXcLW_j0dIo1IjAvSu9WUk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
