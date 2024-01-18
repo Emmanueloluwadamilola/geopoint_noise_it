@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:futa_noise_app/list_page.dart';
-import 'package:futa_noise_app/search_page.dart';
+import 'package:futa_noise_app/map_page.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
@@ -9,12 +9,13 @@ import 'package:noise_meter/noise_meter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:futa_noise_app/settings_page.dart';
 
-enum BottomIcon { home, search, list, setting }
+
+enum BottomIcon { home, search, list, setting, map }
 
 class HomePage extends StatefulWidget {
   static const String id = 'home_screen';
   const HomePage({super.key});
-
+ 
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -36,6 +37,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    handleLocationPermission();
+    getCurrentPosition();
+
   }
 
   @override
@@ -86,18 +90,15 @@ class _HomePageState extends State<HomePage> {
   Future<void> requestPermission() async =>
       await Permission.microphone.request();
 
+  // Future<void> checkAndRequestPermission() async => if (!(await checkPermission())) await requestPermission();
+
   /// Start noise sampling.
   Future<void> start() async {
+    if (!(await checkPermission())) await requestPermission();
     // Create a noise meter, if not already done.
     noiseMeter ??= NoiseMeter();
     getCurrentPosition();
     startTimeReading();
-
-    // Check permission to use the microphone.
-    //
-    // Remember to update the AndroidManifest file (Android) and the
-    // Info.plist and pod files (iOS).
-    if (!(await checkPermission())) await requestPermission();
 
     // Listen to the noise stream.
     _noiseSubscription = noiseMeter?.noise.listen(onData, onError: onError);
@@ -114,10 +115,13 @@ class _HomePageState extends State<HomePage> {
     CollectionReference collRef =
         FirebaseFirestore.instance.collection('client');
     collRef.add({
-      'sound-level': _latestReading?.meanDecibel.toStringAsFixed(3),
-      'time': elapsedTime,
+      'sound_level': _latestReading?.meanDecibel.toStringAsFixed(3),
+      'duration': elapsedTime,
       'location_name': currentAddress,
-      'date': '${currentDate.year}-${currentDate.month}-${currentDate.day}'
+      'date': '${currentDate.year}-${currentDate.month}-${currentDate.day}',
+      'time': '${currentDate.hour}-${currentDate.minute}-${currentDate.second}',
+      'longitude': currentPosition?.longitude.toStringAsFixed(10),
+      'latitude': currentPosition?.latitude.toStringAsFixed(10),
     });
   }
 
@@ -185,6 +189,22 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, SettingPage.id);
+                      setState(() {
+                        selectedIcon = BottomIcon.setting;
+                      });
+                    },
+                    icon: const Icon(Icons.settings),
+                    iconSize: 30,
+                    color: Colors.white,
+                  ),
+            ),
+          ],
           backgroundColor: const Color(0XFF1E319D),
           centerTitle: true,
           title: const Text(
@@ -248,6 +268,18 @@ class _HomePageState extends State<HomePage> {
               children: [
                 IconButton(
                   onPressed: () {
+                    Navigator.pushNamed(context, ListPage.id);
+                    setState(() {
+                      selectedIcon = BottomIcon.list;
+                    });
+                  },
+                  icon: const Icon(Icons.list),
+                  iconSize: 40,
+                  color: Colors.white30,
+                ),
+                
+                IconButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, HomePage.id);
                     setState(() {
                       selectedIcon = BottomIcon.home;
@@ -257,38 +289,28 @@ class _HomePageState extends State<HomePage> {
                   iconSize: 40,
                   color: Colors.white,
                 ),
+                // IconButton(
+                //   onPressed: () {
+                //     Navigator.pushNamed(context, SearchPage.id);
+                //     setState(() {
+                //       selectedIcon = BottomIcon.search;
+                //     });
+                //   },
+                //   icon: const Icon(Icons.search),
+                //   iconSize: 40,
+                //   color: Colors.white,
+                // ),
+
                 IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, SearchPage.id);
+                    Navigator.pushNamed(context, NoiseMapScreen.id);
                     setState(() {
-                      selectedIcon = BottomIcon.search;
+                      selectedIcon = BottomIcon.map;
                     });
                   },
-                  icon: const Icon(Icons.search),
+                  icon: const Icon(Icons.map),
                   iconSize: 40,
-                  color: Colors.white,
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, ListPage.id);
-                    setState(() {
-                      selectedIcon = BottomIcon.list;
-                    });
-                  },
-                  icon: const Icon(Icons.list),
-                  iconSize: 40,
-                  color: Colors.white,
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, SettingPage.id);
-                    setState(() {
-                      selectedIcon = BottomIcon.setting;
-                    });
-                  },
-                  icon: const Icon(Icons.settings),
-                  iconSize: 40,
-                  color: Colors.white,
+                  color: Colors.white30,
                 ),
               ]),
         ),

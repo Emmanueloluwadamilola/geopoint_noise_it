@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:futa_noise_app/forget_password.dart';
 import 'package:futa_noise_app/home_screen.dart';
 import 'package:futa_noise_app/list_page.dart';
+import 'package:futa_noise_app/map_page.dart';
 import 'package:futa_noise_app/search_page.dart';
 import 'package:futa_noise_app/settings_page.dart';
 import 'package:futa_noise_app/sign_in.dart';
@@ -40,7 +41,9 @@ class MyApp extends StatelessWidget {
           ForgetPassword.id: (context) => const ForgetPassword(),
           SettingPage.id: (context) => const SettingPage(),
           SearchPage.id: (context) => const SearchPage(),
-          ListPage.id: (context) => const ListPage(),
+          ListPage.id: (context) =>  const ListPage(),
+          NoiseMapScreen.id: (context) =>  NoiseMapScreen(),
+
         });
   }
 }

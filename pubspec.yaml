@@ -23,7 +23,7 @@ dependencies:
   google_fonts: ^5.1.0
   syncfusion_flutter_charts: ^22.2.7
   geolocator: ^10.1.0
-  geocoding: ^2.1.0
+  geocoding: ^2.1.1
   get: ^4.6.6
   cloud_firestore: ^4.11.0
   firebase_core: ^2.20.0
@@ -32,6 +32,8 @@ dependencies:
   noise_meter: ^5.0.2
   permission_handler: ^11.0.1
   shared_preferences: ^2.2.2
+  google_maps_flutter: ^2.5.3
+  fl_chart: ^0.65.0
   
 
  

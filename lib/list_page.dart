@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 class ListPage extends StatelessWidget {
   static const String id = 'list_page';
-  const ListPage({super.key});
+   const ListPage({super.key});
+
 
   Future<List<Map<String, dynamic>>> getdata() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -11,10 +12,11 @@ class ListPage extends StatelessWidget {
 
     List<Map<String, dynamic>> dataList = querySnapshot.docs.map((doc) {
       return {
-        'sound-level': doc['sound-level'],
-        'time': doc['time'],
+        'sound_level': doc['sound_level'],
+        'duration': doc['duration'],
         'location_name': doc['location_name'],
         'date': doc['date'],
+        'time': doc['time'],
       };
     }).toList();
 
@@ -40,17 +42,19 @@ class ListPage extends StatelessWidget {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                return ListView.builder(itemBuilder: (context, index) {
+                return ListView.builder(itemCount: snapshot.data?.length,
+                    itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(
-                        'Noise Level: ${snapshot.data![index]['sound-level']}'),
+                        'Noise Level: ${snapshot.data![index]['sound_level']}'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Duration: ${snapshot.data![index]['time']} s'),
+                        Text('Duration: ${snapshot.data![index]['duration']} s'),
                         Text(
                             'Address: ${snapshot.data![index]['location_name']}'),
                         Text('Date: ${snapshot.data![index]['date']}'),
+                        Text('Time: ${snapshot.data![index]['time']}'),
                       ],
                     ),
                   );

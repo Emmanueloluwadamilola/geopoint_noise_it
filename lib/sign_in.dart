@@ -70,7 +70,7 @@ class _SignInState extends State<SignIn> {
                             fontSize: 18,
                           ),
                           suffixIcon: const Icon(Icons.mail)),
-                    )),
+                    ),),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
