@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:futa_noise_app/home_screen.dart';
-import 'package:futa_noise_app/sign_in.dart';
+import 'package:futa_noise_app/screens/home_screen.dart';
+import 'package:futa_noise_app/screens/sign_in.dart';
 import 'package:flutter/material.dart';
-import 'package:futa_noise_app/toast.dart';
+import 'package:futa_noise_app/Logic/toast.dart';
 
 import 'package:get/get.dart';
 
@@ -40,7 +40,9 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     Timer(const Duration(seconds: 5), () {
-      Get.to(() => FirebaseAuth.instance.currentUser == null? const SignIn(): const HomePage());
+      Get.to(() => FirebaseAuth.instance.currentUser == null
+          ? const SignIn()
+          : const Home());
     });
     return Scaffold(
       body: Container(

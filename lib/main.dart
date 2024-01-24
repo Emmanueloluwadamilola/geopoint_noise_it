@@ -1,16 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:futa_noise_app/forget_password.dart';
-import 'package:futa_noise_app/home_screen.dart';
-import 'package:futa_noise_app/list_page.dart';
-import 'package:futa_noise_app/map_page.dart';
-import 'package:futa_noise_app/search_page.dart';
-import 'package:futa_noise_app/settings_page.dart';
-import 'package:futa_noise_app/sign_in.dart';
-import 'package:futa_noise_app/signup_page.dart';
-import 'package:futa_noise_app/welcome_page.dart';
+import 'package:futa_noise_app/screens/home_screen.dart';
+import 'package:futa_noise_app/screens/list_page.dart';
+import 'package:futa_noise_app/screens/map_page.dart';
+import 'package:futa_noise_app/screens/search_page.dart';
+import 'package:futa_noise_app/screens/settings_page.dart';
+import 'package:futa_noise_app/screens/sign_in.dart';
+import 'package:futa_noise_app/screens/signup_page.dart';
+import 'package:futa_noise_app/screens/welcome_page.dart';
 import 'package:get/get.dart';
-import 'firebase_options.dart';
+import 'Logic/Firebase/firebase_options.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,13 +37,12 @@ class MyApp extends StatelessWidget {
           WelcomePage.id: (context) => const WelcomePage(),
           SignIn.id: (context) => const SignIn(),
           SignUp.id: (context) => const SignUp(),
-          HomePage.id: (context) => const HomePage(),
+          Home.id: (context) => const Home(),
           ForgetPassword.id: (context) => const ForgetPassword(),
           SettingPage.id: (context) => const SettingPage(),
           SearchPage.id: (context) => const SearchPage(),
-          ListPage.id: (context) =>  const ListPage(),
-          NoiseMapScreen.id: (context) =>  NoiseMapScreen(),
-
+          ListPage.id: (context) => const ListPage(),
+          NoiseMapScreen.id: (context) => const NoiseMapScreen(),
         });
   }
 }

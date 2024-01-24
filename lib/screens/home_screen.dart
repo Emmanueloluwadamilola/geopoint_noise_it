@@ -1,33 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:futa_noise_app/list_page.dart';
-import 'package:futa_noise_app/map_page.dart';
+import 'package:futa_noise_app/constants.dart';
+import 'package:futa_noise_app/widgets/bottom_app_bar.dart';
+import 'package:futa_noise_app/widgets/home_content_widget.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:futa_noise_app/settings_page.dart';
-
+import 'package:futa_noise_app/screens/settings_page.dart';
 
 enum BottomIcon { home, search, list, setting, map }
 
-class HomePage extends StatefulWidget {
+class Home extends StatefulWidget {
   static const String id = 'home_screen';
-  const HomePage({super.key});
- 
+  const Home({super.key});
+
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Home> createState() => HomeState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomeState extends State<Home> {
   String? currentAddress;
   Position? currentPosition;
   BottomIcon selectedIcon = BottomIcon.home;
 
-  bool _isRecording = false;
-  NoiseReading? _latestReading;
-  StreamSubscription<NoiseReading>? _noiseSubscription;
+  bool isRecording = false;
+  NoiseReading? latestReading;
+  StreamSubscription<NoiseReading>? noiseSubscription;
   NoiseMeter? noiseMeter;
 
   DateTime? startTime;
@@ -39,12 +39,11 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     handleLocationPermission();
     getCurrentPosition();
-
   }
 
   @override
   void dispose() {
-    _noiseSubscription?.cancel();
+    noiseSubscription?.cancel();
     super.dispose();
   }
 
@@ -76,7 +75,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void onData(NoiseReading noiseReading) =>
-      setState(() => _latestReading = noiseReading);
+      setState(() => latestReading = noiseReading);
 
   void onError(Object error) {
     //print(error);
@@ -90,7 +89,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> requestPermission() async =>
       await Permission.microphone.request();
 
-  // Future<void> checkAndRequestPermission() async => if (!(await checkPermission())) await requestPermission();
+  // Future<void> checkAndRequestPermission() async => if (!(await checkPermission())) await requestPermissio);
 
   /// Start noise sampling.
   Future<void> start() async {
@@ -101,25 +100,25 @@ class _HomePageState extends State<HomePage> {
     startTimeReading();
 
     // Listen to the noise stream.
-    _noiseSubscription = noiseMeter?.noise.listen(onData, onError: onError);
-    setState(() => _isRecording = true);
+    noiseSubscription = noiseMeter?.noise.listen(onData, onError: onError);
+    setState(() => isRecording = true);
   }
 
   /// Stop sampling.
   void stop() {
-    _noiseSubscription?.cancel();
+    noiseSubscription?.cancel();
     stopTimeReading();
-    setState(() => _isRecording = false);
+    setState(() => isRecording = false);
     DateTime currentDate = DateTime.now();
 
     CollectionReference collRef =
         FirebaseFirestore.instance.collection('client');
     collRef.add({
-      'sound_level': _latestReading?.meanDecibel.toStringAsFixed(3),
+      'sound_level': latestReading?.meanDecibel.toStringAsFixed(3),
       'duration': elapsedTime,
       'location_name': currentAddress,
       'date': '${currentDate.year}-${currentDate.month}-${currentDate.day}',
-      'time': '${currentDate.hour}-${currentDate.minute}-${currentDate.second}',
+      'time': '${currentDate.hour}:${currentDate.minute}:${currentDate.second}',
       'longitude': currentPosition?.longitude.toStringAsFixed(10),
       'latitude': currentPosition?.latitude.toStringAsFixed(10),
     });
@@ -193,133 +192,31 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, SettingPage.id);
-                      setState(() {
-                        selectedIcon = BottomIcon.setting;
-                      });
-                    },
-                    icon: const Icon(Icons.settings),
-                    iconSize: 30,
-                    color: Colors.white,
-                  ),
+                onPressed: () {
+                  Navigator.pushNamed(context, SettingPage.id);
+                  setState(() {
+                    selectedIcon = BottomIcon.setting;
+                  });
+                },
+                icon: const Icon(Icons.settings),
+                iconSize: 30,
+                color: Colors.white,
+              ),
             ),
           ],
-          backgroundColor: const Color(0XFF1E319D),
+          backgroundColor: kPrimaryColour,
           centerTitle: true,
           title: const Text(
             "Noise App",
             style: TextStyle(color: Colors.white),
           )),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Lat: ${currentPosition?.latitude.toStringAsFixed(2) ?? "0.0"} ',
-                  style: const TextStyle(fontSize: 20),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Lon: ${currentPosition?.longitude.toStringAsFixed(2) ?? "0.0"}",
-                  style: const TextStyle(fontSize: 20),
-                )
-              ],
-            ),
-            Text("Location: ${currentAddress ?? " "}"),
-            Text(
-              ' ${_latestReading?.meanDecibel.toStringAsFixed(3)} dB',
-              style: const TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              'Max: ${_latestReading?.maxDecibel.toStringAsFixed(3)} dB',
-              style: const TextStyle(fontSize: 17),
-            ),
-            Text(
-              "Time: $elapsedTime",
-              style: const TextStyle(fontSize: 18),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 20),
-              child: Text(_isRecording ? "Mic: ON" : "Mic: OFF",
-                  style:
-                      const TextStyle(fontSize: 25, color: Color(0XFF1E319D))),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: const Color(0XFF1E319D),
-        height: 70,
-        shape: const CircularNotchedRectangle(),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15.0, right: 15),
-          child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, ListPage.id);
-                    setState(() {
-                      selectedIcon = BottomIcon.list;
-                    });
-                  },
-                  icon: const Icon(Icons.list),
-                  iconSize: 40,
-                  color: Colors.white30,
-                ),
-                
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, HomePage.id);
-                    setState(() {
-                      selectedIcon = BottomIcon.home;
-                    });
-                  },
-                  icon: const Icon(Icons.home),
-                  iconSize: 40,
-                  color: Colors.white,
-                ),
-                // IconButton(
-                //   onPressed: () {
-                //     Navigator.pushNamed(context, SearchPage.id);
-                //     setState(() {
-                //       selectedIcon = BottomIcon.search;
-                //     });
-                //   },
-                //   icon: const Icon(Icons.search),
-                //   iconSize: 40,
-                //   color: Colors.white,
-                // ),
-
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, NoiseMapScreen.id);
-                    setState(() {
-                      selectedIcon = BottomIcon.map;
-                    });
-                  },
-                  icon: const Icon(Icons.map),
-                  iconSize: 40,
-                  color: Colors.white30,
-                ),
-              ]),
-        ),
-      ),
+      body: HomePageContent(elapsedTime, currentAddress, currentPosition, latestReading, isRecording: isRecording, ),
+      bottomNavigationBar: const BottomAppBarWidget(),
       floatingActionButton: FloatingActionButton.large(
         shape: const CircleBorder(),
-        backgroundColor: _isRecording ? Colors.red : const Color(0XFF1E319D),
-        onPressed: _isRecording ? stop : start,
-        child: _isRecording
+        backgroundColor: isRecording ? Colors.red : kPrimaryColour,
+        onPressed: isRecording ? stop : start,
+        child: isRecording
             ? const Icon(
                 Icons.stop,
                 color: Colors.black,

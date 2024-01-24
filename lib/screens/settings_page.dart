@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:futa_noise_app/sign_in.dart';
-import 'package:futa_noise_app/toast.dart';
+import 'package:futa_noise_app/screens/sign_in.dart';
+import 'package:futa_noise_app/Logic/toast.dart';
 
 class SettingPage extends StatefulWidget {
   static const String id = 'setting_page';

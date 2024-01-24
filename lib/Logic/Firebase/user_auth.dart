@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:futa_noise_app/toast.dart';
+import 'package:futa_noise_app/Logic/toast.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -18,7 +18,7 @@ class FirebaseAuthService {
       if (e.code == 'email-already-in-use') {
         showToast(message: 'The email address is already in use.');
       } else {
-        showToast(message: 'An error occurred: ${e.code}');
+        showToast(message: 'An error occurred, Check your internet connectivity: ${e.code}');
       }
     }
     return null;
@@ -32,9 +32,9 @@ class FirebaseAuthService {
       return credential.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        // showToast(message: 'Invalid email or password.');
+         showToast(message: 'Invalid email or password.');
       } else {
-        // showToast(message: 'An error occurred: ${e.code}');
+         showToast(message: 'Check your internet connectivity: ${e.code}');
       }
     }
     return null;

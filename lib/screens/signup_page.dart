@@ -1,31 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:futa_noise_app/forget_password.dart';
-import 'package:futa_noise_app/home_screen.dart';
-import 'package:futa_noise_app/signup_page.dart';
-import 'package:futa_noise_app/toast.dart';
-import 'package:futa_noise_app/user_auth.dart';
+import 'package:futa_noise_app/screens/sign_in.dart';
+import 'package:futa_noise_app/Logic/toast.dart';
+import 'package:futa_noise_app/Logic/Firebase/user_auth.dart';
 
-class SignIn extends StatefulWidget {
-  static const String id = 'signin_screen';
-  const SignIn({super.key});
+class SignUp extends StatefulWidget {
+  static const String id = 'signup_screen';
+  const SignUp({super.key});
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignUpState extends State<SignUp> {
   final FirebaseAuthService _auth = FirebaseAuthService();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
-  bool _isSigning = false;
+  bool isSigningUp = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -47,7 +47,7 @@ class _SignInState extends State<SignIn> {
                 height: 10,
               ),
               const Text(
-                "Login to your account",
+                "Register a new account",
                 style: TextStyle(fontSize: 16),
               ),
               Padding(
@@ -70,7 +70,7 @@ class _SignInState extends State<SignIn> {
                             fontSize: 18,
                           ),
                           suffixIcon: const Icon(Icons.mail)),
-                    ),),
+                    )),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
@@ -92,13 +92,39 @@ class _SignInState extends State<SignIn> {
                           hintStyle: const TextStyle(
                             fontSize: 18,
                           ),
-                          suffixIcon: const Icon(Icons.password)),
+                          suffixIcon: const Icon(Icons.visibility_off)),
                     )),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
+                child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: TextField(
+                      controller: _confirmPasswordController,
+                      obscureText: true,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        hintText: "confirm password",
+                        hintStyle: const TextStyle(
+                          fontSize: 18,
+                        ),
+                        suffixIcon: const Icon(Icons.visibility_off),
+                      ),
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: 20, bottom: 20),
                 child: InkWell(
-                  onTap: _signIn,
+                  onTap: _signUp,
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color(0XFF1E319D),
@@ -107,53 +133,25 @@ class _SignInState extends State<SignIn> {
                     ),
                     width: double.infinity,
                     //height: 30,
-                    child: Center(
+                    child:  Center(
                         child: Padding(
                       padding: const EdgeInsets.only(top: 12, bottom: 12),
-                      child: _isSigning
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                          : const Text(
-                              "Login",
-                              style:
-                                  TextStyle(fontSize: 25, color: Colors.white),
-                            ),
+                      child: isSigningUp ? const CircularProgressIndicator(color: Colors.white,): const Text(
+                        "Register",
+                        style: TextStyle(fontSize: 25, color: Colors.white),
+                      ),
                     )),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 25,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, ForgetPassword.id);
-                    },
-                    child: const Text(
-                      "Forget Password ?",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, SignUp.id);
-                    },
-                    child: const Text(
-                      "Sign Up",
-                      style: TextStyle(fontSize: 18, color: Color(0XFF1E319D)),
-                    ),
-                  )
-                ],
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, SignIn.id);
+                },
+                child: const Text(
+                  "Already has account?",
+                  style: TextStyle(fontSize: 18),
+                ),
               )
             ],
           ),
@@ -162,27 +160,31 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  void _signIn() async {
-     setState(() {
-      _isSigning = true;
-    });
+  void _signUp() async {
+setState(() {
+  isSigningUp = true;
+});
 
     String email = _emailController.text;
     String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
 
-    User? user = await _auth.signInWithEmailAndPassword(email, password);
+    User? user = await _auth.signUpWithEmailAndPassword(email, password);
 
     setState(() {
-  _isSigning = false;
+  isSigningUp = false;
 });
 
     if (user != null) {
-      showToast(message: "User is successfully Logged In");
-      // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, HomePage.id);
-      //Helper.saveUserLoggedInSharePreference(true);
+      if (confirmPassword == password) {
+        showToast(message:"User is successfully created", );
+        // ignore: use_build_context_synchronously
+        Navigator.pushNamed(context, SignIn.id);
+      } else {
+        showToast(message:"Password does not match");
+      }
     } else {
-      showToast(message: "Some error happend");
+      showToast(message:"Some error happend");
     }
   }
 }

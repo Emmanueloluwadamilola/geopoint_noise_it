@@ -6,6 +6,8 @@ import 'package:fl_chart/fl_chart.dart';
 
 class NoiseMapScreen extends StatefulWidget {
   static const String id = 'map_page';
+
+  const NoiseMapScreen({super.key});
   @override
   _NoiseMapScreenState createState() => _NoiseMapScreenState();
 }
@@ -18,9 +20,9 @@ class _NoiseMapScreenState extends State<NoiseMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        //title: Text('Noise Map'),
-      ),
+      // appBar: AppBar(
+      //   //title: Text('Noise Map'),
+      // ),
       body: Column(
         children: [
           Expanded(
@@ -34,11 +36,11 @@ class _NoiseMapScreenState extends State<NoiseMapScreen> {
                       spots: noiseLevelData,
                       isCurved: true,
                       color: Colors.blue,
-                      dotData: const FlDotData(show: false),
+                      dotData:  FlDotData(show: false),
                       belowBarData: BarAreaData(show: false),
                     ),
                   ],
-                  titlesData: const FlTitlesData(
+                  titlesData:  FlTitlesData(
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(showTitles: true),
                     ),
@@ -48,7 +50,7 @@ class _NoiseMapScreenState extends State<NoiseMapScreen> {
                    
                   ),
                   borderData: FlBorderData(show: true),
-                  gridData: const FlGridData(show: true),
+                  gridData:  FlGridData(show: true),
                 ),
               ),
             ),
@@ -75,7 +77,7 @@ class _NoiseMapScreenState extends State<NoiseMapScreen> {
 
   void fetchNoiseData() async {
     // Replace 'your_collection' with the actual name of your Firestore collection
-    CollectionReference noiseCollection = FirebaseFirestore.instance.collection('your_collection');
+    CollectionReference noiseCollection = FirebaseFirestore.instance.collection('client');
 
     QuerySnapshot querySnapshot = await noiseCollection.get();
 
