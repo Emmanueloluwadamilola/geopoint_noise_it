@@ -60,7 +60,7 @@ class _NoiseMapScreenState extends State<NoiseMapScreen> {
             child: GoogleMap(
               onMapCreated: (controller) {
                 mapController = controller;
-                // Call a function to fetch and add noise data markers
+                
                 fetchNoiseData();
               },
               initialCameraPosition: const CameraPosition(
@@ -80,13 +80,12 @@ class _NoiseMapScreenState extends State<NoiseMapScreen> {
 
     QuerySnapshot querySnapshot = await noiseCollection.get();
 
-    // Clear existing data
     setState(() {
       markers.clear();
       noiseLevelData.clear();
     });
 
-    // Add markers to the map based on noise data
+
     for (var doc in querySnapshot.docs) {
       double latitude = doc['latitude'];
       double longitude = doc['longitude'];

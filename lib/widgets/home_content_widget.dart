@@ -33,27 +33,49 @@ class _HomePageContentState extends State<HomePageContent> {
             children: [
               Text(
                 'Lat: ${widget.currentPosition?.latitude.toStringAsFixed(2) ?? "0.0"} ',
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 25),
               ),
               const SizedBox(
                 width: 10,
               ),
               Text(
                 "Lon: ${widget.currentPosition?.longitude.toStringAsFixed(2) ?? "0.0"}",
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 25),
               )
             ],
           ),
-          Text("Location: ${widget.currentAddress ?? " "}"),
           Text(
-            ' ${widget.latestReading?.meanDecibel.toStringAsFixed(3) ?? 0.00} dB',
-            style: const TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
+            "Location: ${widget.currentAddress ?? " "}",
+            maxLines: 3,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                ' ${widget.latestReading?.meanDecibel.toStringAsFixed(1) ?? 0.00} ',
+                style: const TextStyle(
+                  fontSize: 120,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Text(
+                'dB',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ],
           ),
           const SizedBox(
             width: 10,
           ),
           Text(
-            'Max: ${widget.latestReading?.maxDecibel.toStringAsFixed(3) ?? 0.00} dB',
+            'Max: ${widget.latestReading?.maxDecibel.toStringAsFixed(1) ?? 0.00} dB',
             style: const TextStyle(fontSize: 17),
           ),
           Text(
