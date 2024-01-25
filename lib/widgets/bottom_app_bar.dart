@@ -25,7 +25,10 @@ class _BottomAppBarWidgetState extends State<BottomAppBarWidget> {
       height: 70,
       shape: const CircularNotchedRectangle(),
       child: Padding(
-        padding: const EdgeInsets.only(left: 15.0, right: 15),
+        padding: const EdgeInsets.only(
+          left: 15.0,
+          right: 15,
+        ),
         child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,8 +52,8 @@ class _BottomAppBarWidgetState extends State<BottomAppBarWidget> {
                     selectedIcon = BottomIcon.home;
                   });
                 },
-                icon: const Icon(Icons.home),
-                iconSize: 60,
+                icon: Icon(Icons.home),
+                iconSize: 40,
                 color: Colors.white,
               ),
               // IconButton(

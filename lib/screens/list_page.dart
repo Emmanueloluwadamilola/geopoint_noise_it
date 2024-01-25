@@ -50,7 +50,7 @@ class ListPage extends StatelessWidget {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Duration: ${snapshot.data![index]['duration']} s'),
+                        Text('Duration: ${snapshot.data![index]['duration']} '),
                         Text(
                             'Address: ${snapshot.data![index]['location_name']}'),
                         Text('Date: ${snapshot.data![index]['date']}'),

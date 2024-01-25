@@ -83,7 +83,7 @@ class _SignInState extends State<SignIn> {
                         borderRadius: BorderRadius.circular(20)),
                     child: TextField(
                       controller: _passwordController,
-                      obscureText: true,
+                      obscureText: passwordObscure,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -97,7 +97,7 @@ class _SignInState extends State<SignIn> {
                           suffixIcon: IconButton(
                             icon: Icon(passwordObscure
                                 ? Icons.visibility_off
-                                : Icons.visibility_off),
+                                : Icons.visibility),
                             onPressed: () {
                               setState(() {
                                 passwordObscure = !passwordObscure;

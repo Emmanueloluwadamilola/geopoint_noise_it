@@ -9,9 +9,13 @@ class HomePageContent extends StatefulWidget {
   Position? currentPosition;
   final bool isRecording;
   NoiseReading? latestReading;
-  HomePageContent(String? elapsedTime, String? currentAddress,
-      Position? currentPosition, NoiseReading? latestReading,
-      {super.key, required this.isRecording});
+  HomePageContent(
+      {super.key,
+      required this.isRecording,
+      required this.latestReading,
+      required this.currentAddress,
+      required this.currentPosition,
+      required this.elapsedTime});
 
   @override
   State<HomePageContent> createState() => _HomePageContentState();
@@ -42,18 +46,18 @@ class _HomePageContentState extends State<HomePageContent> {
           ),
           Text("Location: ${widget.currentAddress ?? " "}"),
           Text(
-            ' ${widget.latestReading?.meanDecibel.toStringAsFixed(3)} dB',
+            ' ${widget.latestReading?.meanDecibel.toStringAsFixed(3) ?? 0.00} dB',
             style: const TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
           ),
           const SizedBox(
             width: 10,
           ),
           Text(
-            'Max: ${widget.latestReading?.maxDecibel.toStringAsFixed(3)} dB',
+            'Max: ${widget.latestReading?.maxDecibel.toStringAsFixed(3) ?? 0.00} dB',
             style: const TextStyle(fontSize: 17),
           ),
           Text(
-            "Time: ${widget.elapsedTime} seconds",
+            "Time: ${widget.elapsedTime}",
             style: const TextStyle(fontSize: 18),
           ),
           Container(

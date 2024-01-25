@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:futa_noise_app/constants.dart';
 import 'package:futa_noise_app/widgets/bottom_app_bar.dart';
+import 'package:futa_noise_app/widgets/dialogbox_widget.dart';
 import 'package:futa_noise_app/widgets/home_content_widget.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -32,7 +33,7 @@ class HomeState extends State<Home> {
 
   DateTime? startTime;
   DateTime? stopTime;
-  String elapsedTime = "0 seconds";
+  String elapsedTime = "0 second";
 
   @override
   void initState() {
@@ -51,7 +52,7 @@ class HomeState extends State<Home> {
     setState(() {
       startTime = DateTime.now();
       stopTime = null;
-      elapsedTime = "0 seconds";
+      elapsedTime = "0 second";
     });
     updateElapsedTime();
   }
@@ -190,19 +191,32 @@ class HomeState extends State<Home> {
           automaticallyImplyLeading: false,
           actions: [
             Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, SettingPage.id);
-                  setState(() {
-                    selectedIcon = BottomIcon.setting;
-                  });
-                },
-                icon: const Icon(Icons.settings),
-                iconSize: 30,
-                color: Colors.white,
-              ),
-            ),
+                padding: const EdgeInsets.only(right: 8),
+                child: PopupMenuButton(
+                    color: Colors.white,
+                    itemBuilder: (context) => [
+                          PopupMenuItem(
+                            child: const Text('Setting'),
+                            onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => const SettingPage())),
+                          ),
+                          PopupMenuItem(
+                            onTap: () => showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const DialogBoxWidget();
+                                }),
+                            child: const Text('About App'),
+                          ),
+                         PopupMenuItem(
+                            child: const Text('Reset'),
+                            onTap: () {
+                              setState(() => latestReading = null
+                                  );
+                            },
+                          ),
+                        ])),
           ],
           backgroundColor: kPrimaryColour,
           centerTitle: true,
@@ -210,7 +224,12 @@ class HomeState extends State<Home> {
             "Noise App",
             style: TextStyle(color: Colors.white),
           )),
-      body: HomePageContent(elapsedTime, currentAddress, currentPosition, latestReading, isRecording: isRecording, ),
+      body: HomePageContent(
+          isRecording: isRecording,
+          elapsedTime: elapsedTime,
+          latestReading: latestReading,
+          currentPosition: currentPosition,
+          currentAddress: currentAddress),
       bottomNavigationBar: const BottomAppBarWidget(),
       floatingActionButton: FloatingActionButton.large(
         shape: const CircleBorder(),

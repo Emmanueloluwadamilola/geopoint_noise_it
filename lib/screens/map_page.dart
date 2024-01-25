@@ -64,7 +64,7 @@ class _NoiseMapScreenState extends State<NoiseMapScreen> {
                 fetchNoiseData();
               },
               initialCameraPosition: const CameraPosition(
-                target: LatLng(37.7749, -122.4194), // Initial map location
+                target: LatLng(5.0111382000, 8.3485931000), // Initial map location
                 zoom: 12.0,
               ),
               markers: markers,
@@ -76,7 +76,6 @@ class _NoiseMapScreenState extends State<NoiseMapScreen> {
   }
 
   void fetchNoiseData() async {
-    // Replace 'your_collection' with the actual name of your Firestore collection
     CollectionReference noiseCollection = FirebaseFirestore.instance.collection('client');
 
     QuerySnapshot querySnapshot = await noiseCollection.get();
