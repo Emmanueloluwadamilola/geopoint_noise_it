@@ -35,7 +35,7 @@ class _NoiseMapScreenState extends State<NoiseMapScreen> {
                 List<WeightedLatLng>? heatmapPoints = snapshot.data!;
                 return FlutterMap(
                     options: const MapOptions(
-                        initialCenter: LatLng(50.5, 30.51), initialZoom: 12),
+                        initialCenter: LatLng(5.01, 8.35), initialZoom: 12),
                     children: [
                       TileLayer(
                           urlTemplate:
