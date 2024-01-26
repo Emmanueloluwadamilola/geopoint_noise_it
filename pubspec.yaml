@@ -19,8 +19,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   fluttertoast: ^8.2.2
   http: ^1.1.0
-  font_awesome_flutter: ^10.5.0
-  google_fonts: ^5.1.0
   geolocator: ^10.1.0
   geocoding: ^2.1.1
   get: ^4.6.6
@@ -31,8 +29,9 @@ dependencies:
   noise_meter: ^5.0.2
   permission_handler: ^11.0.1
   shared_preferences: ^2.2.2
-  google_maps_flutter: ^2.5.3
-  fl_chart: ^0.60.0
+  flutter_map: ^6.1.0
+  flutter_map_heatmap: ^0.0.7
+
   
 
  

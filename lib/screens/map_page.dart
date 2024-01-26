@@ -1,134 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fl_chart/fl_chart.dart';
-
+import 'package:flutter_map_heatmap/flutter_map_heatmap.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class NoiseMapScreen extends StatefulWidget {
-  static const String id = 'map_page';
+  static const String id = 'noise_noise_screen';
 
   const NoiseMapScreen({super.key});
+
   @override
-  _NoiseMapScreenState createState() => _NoiseMapScreenState();
+  State<NoiseMapScreen> createState() => _NoiseMapScreenState();
 }
 
 class _NoiseMapScreenState extends State<NoiseMapScreen> {
-  late GoogleMapController mapController;
-  Set<Marker> markers = {};
-  List<FlSpot> noiseLevelData = [];
+  @override
+  void initState() {
+    super.initState();
+    fetchMapData();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   //title: Text('Noise Map'),
-      // ),
-      body: Column(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              child: LineChart(
-                LineChartData(
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: noiseLevelData,
-                      isCurved: true,
-                      color: Colors.blue,
-                      dotData:  FlDotData(show: false),
-                      belowBarData: BarAreaData(show: false),
-                    ),
-                  ],
-                  titlesData:  FlTitlesData(
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: true),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: true),
-                    ),
-                   
-                  ),
-                  borderData: FlBorderData(show: true),
-                  gridData:  FlGridData(show: true),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: GoogleMap(
-              onMapCreated: (controller) {
-                mapController = controller;
-                
-                fetchNoiseData();
-              },
-              initialCameraPosition: const CameraPosition(
-                target: LatLng(5.0111382000, 8.3485931000), // Initial map location
-                zoom: 12.0,
-              ),
-              markers: markers,
-            ),
-          ),
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: const Text('Noise Heat Map'),
+        ),
+        body: FutureBuilder(
+            future: fetchMapData(),
+            builder: (context, AsyncSnapshot<List<WeightedLatLng>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else {
+                List<WeightedLatLng>? heatmapPoints = snapshot.data!;
+                return FlutterMap(
+                    options: const MapOptions(
+                        initialCenter: LatLng(50.5, 30.51), initialZoom: 12),
+                    children: [
+                      TileLayer(
+                          urlTemplate:
+                              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                          subdomains: const ['a', 'b', 'c']),
+                      HeatMapLayer(
+                        heatMapDataSource:
+                            InMemoryHeatMapDataSource(data: heatmapPoints),
+                        heatMapOptions: HeatMapOptions(
+                            radius: 20,
+                            gradient: HeatMapOptions.defaultGradient,
+                            minOpacity: 0.1),
+                      )
+                    ]);
+              }
+            }));
   }
 
-  void fetchNoiseData() async {
-    CollectionReference noiseCollection = FirebaseFirestore.instance.collection('client');
-
-    QuerySnapshot querySnapshot = await noiseCollection.get();
-
-    setState(() {
-      markers.clear();
-      noiseLevelData.clear();
-    });
-
+  Future<List<WeightedLatLng>> fetchMapData() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot querySnapshot = await firestore.collection('client').get();
+    List<WeightedLatLng> heatmapPoints = [];
 
     for (var doc in querySnapshot.docs) {
+      double noiseLevel = doc['sound_level'];
       double latitude = doc['latitude'];
       double longitude = doc['longitude'];
-      String address = doc['location_name'];
-      var noiseLevel = doc['sound_level'];
 
-      setState(() {
-        markers.add(
-          Marker(
-            markerId: MarkerId('$latitude-$longitude'),
-            position: LatLng(latitude, longitude),
-            infoWindow: InfoWindow(title: 'Address', snippet: '$address\nNoise Level: $noiseLevel dB'),
-          ),
-        );
+      LatLng corr = LatLng(latitude, longitude);
 
-        // Add noise level data for the chart
-        noiseLevelData.add(FlSpot(noiseLevelData.length.toDouble(), noiseLevel.toDouble()));
-      });
+      heatmapPoints.add(WeightedLatLng(corr, noiseLevel));
     }
 
-    // Update the map to reflect the added markers
-    mapController.animateCamera(CameraUpdate.newLatLngBounds(getBounds(markers), 50));
-  }
-
-  LatLngBounds getBounds(Set<Marker> markers) {
-    double minLat = markers.first.position.latitude;
-    double maxLat = markers.first.position.latitude;
-    double minLng = markers.first.position.longitude;
-    double maxLng = markers.first.position.longitude;
-
-    for (var marker in markers) {
-      double lat = marker.position.latitude;
-      double lng = marker.position.longitude;
-
-      minLat = lat < minLat ? lat : minLat;
-      maxLat = lat > maxLat ? lat : maxLat;
-      minLng = lng < minLng ? lng : minLng;
-      maxLng = lng > maxLng ? lng : maxLng;
-    }
-
-    return LatLngBounds(
-      southwest: LatLng(minLat, minLng),
-      northeast: LatLng(maxLat, maxLng),
-    );
+    return heatmapPoints;
   }
 }
+
+// class WeightedLatLng {
+//   final double latitude;
+//   final double longitude;
+//   final double noiseLevel;
+
+//   WeightedLatLng(this.latitude, this.longitude, this.noiseLevel);
+// }
