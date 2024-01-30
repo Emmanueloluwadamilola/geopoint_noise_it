@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:futa_noise_app/constants.dart';
 import 'package:futa_noise_app/screens/home_screen.dart';
 import 'package:futa_noise_app/screens/list_page.dart';
-import 'package:futa_noise_app/screens/map_page.dart';
+import 'package:futa_noise_app/screens/map_screen.dart';
 
 enum BottomIcon { home, search, list, setting, map }
 
@@ -52,7 +52,7 @@ class _BottomAppBarWidgetState extends State<BottomAppBarWidget> {
                     selectedIcon = BottomIcon.home;
                   });
                 },
-                icon: Icon(Icons.home),
+                icon: const Icon(Icons.home),
                 iconSize: 40,
                 color: Colors.white,
               ),
@@ -70,7 +70,7 @@ class _BottomAppBarWidgetState extends State<BottomAppBarWidget> {
 
               IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, NoiseMapScreen.id);
+                  Navigator.pushNamed(context, MapScreen.id);
                   setState(() {
                     selectedIcon = BottomIcon.map;
                   });

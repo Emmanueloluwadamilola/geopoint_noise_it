@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:futa_noise_app/forget_password.dart';
 import 'package:futa_noise_app/screens/home_screen.dart';
 import 'package:futa_noise_app/screens/list_page.dart';
-import 'package:futa_noise_app/screens/map_page.dart';
+import 'package:futa_noise_app/screens/map_screen.dart';
 import 'package:futa_noise_app/screens/search_page.dart';
 import 'package:futa_noise_app/screens/settings_page.dart';
 import 'package:futa_noise_app/screens/sign_in.dart';
@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'FUTA Noise App',
         theme: ThemeData(
+          visualDensity: VisualDensity.adaptivePlatformDensity,
           useMaterial3: true,
         ),
         initialRoute: WelcomePage.id,
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
           SettingPage.id: (context) => const SettingPage(),
           SearchPage.id: (context) => const SearchPage(),
           ListPage.id: (context) => const ListPage(),
-          NoiseMapScreen.id: (context) => const NoiseMapScreen(),
+          MapScreen.id: (context) =>  MapScreen(),
         });
   }
 }
