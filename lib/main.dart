@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           SettingPage.id: (context) => const SettingPage(),
           SearchPage.id: (context) => const SearchPage(),
           ListPage.id: (context) => const ListPage(),
-          MapScreen.id: (context) =>  MapScreen(),
+          MapScreen.id: (context) =>  const MapScreen(),
         });
   }
 }

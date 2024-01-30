@@ -2,21 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:futa_noise_app/screens/home_screen.dart';
-//import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:latlong2/latlong.dart';
 
 // ignore: must_be_immutable
-class MapScreen extends StatelessWidget {
+class MapScreen extends StatefulWidget {
   static const String id = 'noise_noise_screen';
-   MapScreen({super.key});
+  const MapScreen({super.key});
 
-  HomeState homeState = HomeState();
-  late double latitude = homeState.currentPosition!.latitude;
-  late double longitude = homeState.currentPosition!.longitude;
+  @override
+  State<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  late List<Marker> markerData;
+  double realLatitude = 5.0111382000;
+  double realLongitude = 8.3485931000;
 
   Future<List<Map<String, dynamic>>> getdata() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     QuerySnapshot querySnapshot = await firestore.collection('client').get();
+    setState(() {
+      markerData = querySnapshot.docs.cast<Marker>();
+    });
 
     List<Map<String, dynamic>> dataList = querySnapshot.docs.map((doc) {
       return {
@@ -25,10 +33,13 @@ class MapScreen extends StatelessWidget {
         'location_name': doc['location_name'],
         'date': doc['date'],
         'time': doc['time'],
-        'latitude': doc[latitude],
-        'longitude': doc[longitude],
+        'latitude': doc['latitude'],
+        'longitude': doc['longitude'],
       };
     }).toList();
+    setState(() {
+      markerData = dataList.cast<Marker>();
+    });
 
     return dataList;
   }
@@ -46,18 +57,18 @@ class MapScreen extends StatelessWidget {
                 return Text('Error: ${snapshot.error}');
               } else {
                 return FlutterMap(
-        options:  MapOptions(
-            initialCenter: LatLng(latitude, longitude),
-           initialZoom: 15,
-),
-        children: [
-          TileLayer(
-            urlTemplate:
-                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: const ['a', 'b', 'c'],
-          ),
-          
-        ]);
+                    options: MapOptions(
+                      initialCenter: LatLng(realLatitude, realLongitude),
+                      initialZoom: 12,
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        subdomains: const ['a', 'b', 'c'],
+                      ),
+                      MarkerLayer(markers: markerData),
+                    ]);
               }
             }));
   }
