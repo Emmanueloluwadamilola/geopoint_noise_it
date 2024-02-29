@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:futa_noise_app/screens/home_screen.dart';
 
 import 'package:latlong2/latlong.dart';
 
@@ -67,7 +66,7 @@ class _MapScreenState extends State<MapScreen> {
                             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                         subdomains: const ['a', 'b', 'c'],
                       ),
-                      MarkerLayer(markers: markerData),
+                      MarkerLayer(markers: []),
                     ]);
               }
             }));
