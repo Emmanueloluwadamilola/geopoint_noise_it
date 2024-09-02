@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:futa_noise_app/forget_password.dart';
 import 'package:futa_noise_app/screens/home_screen.dart';
+import 'package:futa_noise_app/screens/index_screen.dart';
 import 'package:futa_noise_app/screens/list_page.dart';
 import 'package:futa_noise_app/screens/map_screen.dart';
 import 'package:futa_noise_app/screens/search_page.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
           SearchPage.id: (context) => const SearchPage(),
           ListPage.id: (context) => const ListPage(),
           MapScreen.id: (context) =>  const MapScreen(),
+          IndexScreen.id: (context) => const IndexScreen(),
         });
   }
 }

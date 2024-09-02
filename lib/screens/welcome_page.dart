@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:futa_noise_app/screens/home_screen.dart';
+import 'package:futa_noise_app/constants.dart';
+import 'package:futa_noise_app/screens/index_screen.dart';
 import 'package:futa_noise_app/screens/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:futa_noise_app/Logic/toast.dart';
 
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 class WelcomePage extends StatefulWidget {
   static const String id = 'welcome_screen';
@@ -42,29 +44,34 @@ class _WelcomePageState extends State<WelcomePage> {
     Timer(const Duration(seconds: 5), () {
       Get.to(() => FirebaseAuth.instance.currentUser == null
           ? const SignIn()
-          : const Home());
+          : const IndexScreen());
     });
     return Scaffold(
-      body: Container(
-        color: const Color(0XFF1E319D),
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.multitrack_audio_sharp,
-                size: 90,
-                color: Colors.white,
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              child: ColorFiltered(
+                colorFilter: const ColorFilter.mode(
+                      kPrimaryColour,
+                      BlendMode.modulate,
+                    ),
+                child: Lottie.asset(
+                    
+                    'assets/lottie/noise.json'),
               ),
-              Text(
-                "Noise it",
-                style: TextStyle(
-                  fontSize: 35,
-                  color: Colors.white,
-                ),
+            ),
+            const Text(
+              "Noise App",
+              style: TextStyle(
+                fontSize: 35,
+                fontWeight: FontWeight.w700,
+                color:  Color(0XFF0005ff),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

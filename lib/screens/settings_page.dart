@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:futa_noise_app/constants.dart';
 import 'package:futa_noise_app/screens/sign_in.dart';
 import 'package:futa_noise_app/Logic/toast.dart';
+import 'package:gap/gap.dart';
 
 class SettingPage extends StatefulWidget {
   static const String id = 'setting_page';
@@ -14,34 +16,71 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          title: const Text(
-            "Setting",
-            style: TextStyle(color: Color(0XFF1E319D)),
-          ),
-        ),
-        body: ListView(
+    return SafeArea(
+      child: Scaffold(
+          body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text("Sign Out"),
+            const Text(
+              'Settings',
+              style: TextStyle(
+                fontFamily: black,
+                fontSize: 30,
+                color: Color(0xFF080713),
+              ),
+            ),
+            const Gap(30),
+            GestureDetector(
               onTap: () {
-                //Helper.saveUserLoggedInSharePreference(false);
                 FirebaseAuth.instance.signOut();
                 Navigator.pushNamed(context, SignIn.id);
                 showToast(message: "Successfully signed out");
               },
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.logout,
+                    color: kPrimaryColour,
+                  ),
+                  Gap(8),
+                  Text(
+                    "Sign Out",
+                    style: TextStyle(
+                      fontFamily: bold,
+                      fontSize: 16,
+                      color: kPrimaryColour,
+                    ),
+                  ),
+                ],
+              ),
             ),
-             ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text("About App"),
-              onTap: (){
-                
+            const Gap(30),
+            GestureDetector(
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.pushNamed(context, SignIn.id);
+                showToast(message: "Successfully signed out");
               },
-            )
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.info,
+                    color: kPrimaryColour,
+                  ),
+                  Gap(8),
+                  Text(
+                    "About App",
+                    style: TextStyle(
+                        fontFamily: bold, fontSize: 16, color: kPrimaryColour),
+                  )
+                ],
+              ),
+            ),
           ],
-        ));
+        ),
+      )),
+    );
   }
 }

@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:futa_noise_app/constants.dart';
-import 'package:futa_noise_app/widgets/bottom_app_bar.dart';
-import 'package:futa_noise_app/widgets/dialogbox_widget.dart';
 import 'package:futa_noise_app/widgets/home_content_widget.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:futa_noise_app/screens/settings_page.dart';
 
 enum BottomIcon { home, search, list, setting, map }
 
@@ -22,7 +19,10 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  bool isLoading = false;
   String? currentAddress;
+  String? currentCity;
+  String? currentState;
   Position? currentPosition;
   BottomIcon selectedIcon = BottomIcon.home;
 
@@ -158,6 +158,9 @@ class HomeState extends State<Home> {
   }
 
   Future<void> getCurrentPosition() async {
+    setState(() {
+      isLoading = true;
+    });
     final hasPermission = await handleLocationPermission();
 
     if (!hasPermission) return;
@@ -167,6 +170,9 @@ class HomeState extends State<Home> {
       getAddressFromLatLng(currentPosition!);
     }).catchError((e) {
       debugPrint(e);
+    });
+    setState(() {
+      isLoading = false;
     });
   }
 
@@ -178,6 +184,8 @@ class HomeState extends State<Home> {
       setState(() {
         currentAddress =
             '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}';
+        currentState = '${place.administrativeArea}';
+        currentCity = '${place.locality}';
       });
     }).catchError((e) {
       debugPrint(e);
@@ -186,66 +194,42 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          automaticallyImplyLeading: false,
-          actions: [
-            Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: PopupMenuButton(
+    return SafeArea(
+      child: Scaffold(
+        body: HomePageContent(
+            isLoading: isLoading,
+            currentCity: currentCity,
+            currentState: currentState,
+            isRecording: isRecording,
+            elapsedTime: elapsedTime,
+            latestReading: latestReading,
+            currentPosition: currentPosition,
+            currentAddress: currentAddress),
+        // bottomNavigationBar: const BottomAppBarWidget(),
+        floatingActionButton: GestureDetector(
+          onTap: isRecording ? stop : start,
+          child: Container(
+            height: 80,
+            width: 80,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isRecording ? Colors.red : kPrimaryColour,
+            ),
+            child: isRecording
+                ? const Icon(
+                    Icons.stop,
+                    size: 40,
+                    color: Colors.black,
+                  )
+                : const Icon(
+                    Icons.mic,
+                    size: 40,
                     color: Colors.white,
-                    itemBuilder: (context) => [
-                          PopupMenuItem(
-                            child: const Text('Setting'),
-                            onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => const SettingPage())),
-                          ),
-                          PopupMenuItem(
-                            onTap: () => showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return const DialogBoxWidget();
-                                }),
-                            child: const Text('About App'),
-                          ),
-                         PopupMenuItem(
-                            child: const Text('Reset'),
-                            onTap: () {
-                              setState(() => latestReading = null
-                                  );
-                            },
-                          ),
-                        ])),
-          ],
-          backgroundColor: kPrimaryColour,
-          centerTitle: true,
-          title: const Text(
-            "Noise App",
-            style: TextStyle(color: Colors.white),
-          )),
-      body: HomePageContent(
-          isRecording: isRecording,
-          elapsedTime: elapsedTime,
-          latestReading: latestReading,
-          currentPosition: currentPosition,
-          currentAddress: currentAddress),
-      bottomNavigationBar: const BottomAppBarWidget(),
-      floatingActionButton: FloatingActionButton.large(
-        shape: const CircleBorder(),
-        backgroundColor: isRecording ? Colors.red : kPrimaryColour,
-        onPressed: isRecording ? stop : start,
-        child: isRecording
-            ? const Icon(
-                Icons.stop,
-                color: Colors.black,
-              )
-            : const Icon(
-                Icons.mic,
-                color: Colors.white,
-              ),
+                  ),
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
