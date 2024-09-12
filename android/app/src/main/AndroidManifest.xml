@@ -4,11 +4,11 @@
    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
    <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="futa_noise_app"
+        android:label="Noise App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB83QD33mkvhTYkhu7NsUVau02wulIvIxs"/>
+            android:value=""/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

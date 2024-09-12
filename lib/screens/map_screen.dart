@@ -169,7 +169,7 @@ class _MapScreenState extends State<MapScreen> {
     List<Map<String, dynamic>> dataList = querySnapshot.docs.map((doc) {
       return {
         'sound_level': doc['sound_level'] ?? '60',
-        'location_name': doc['location_name'] ?? 'No data',
+        'location_name': doc['location_name'] ?? 'No Address',
         'latitude': doc['latitude'] ?? '5.5',
         'longitude': doc['longitude'] ?? '8.0',
       };

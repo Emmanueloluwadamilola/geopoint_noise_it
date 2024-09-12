@@ -97,7 +97,7 @@ class HomeState extends State<Home> {
     if (!(await checkPermission())) await requestPermission();
     // Create a noise meter, if not already done.
     noiseMeter ??= NoiseMeter();
-    getCurrentPosition();
+    await getCurrentPosition();
     startTimeReading();
 
     // Listen to the noise stream.

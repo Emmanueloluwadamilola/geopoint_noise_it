@@ -203,7 +203,7 @@ class _HomePageContentState extends State<HomePageContent> {
                 left:
                     widget.latestReading?.meanDecibel.toStringAsFixed(1) == null
                         ? 30
-                        : 10,
+                        : 0,
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -220,8 +220,8 @@ class _HomePageContentState extends State<HomePageContent> {
                         'dB',
                         style: TextStyle(
                           fontSize: 15,
-                          fontFamily: regular,
-                          fontWeight: FontWeight.bold,
+                          fontFamily: bold,
+                          //fontWeight: FontWeight.bold,
                         ),
                       )
                     ],

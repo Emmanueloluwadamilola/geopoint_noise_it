@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:futa_noise_app/constants.dart';
 import 'package:futa_noise_app/screens/sign_in.dart';
 import 'package:futa_noise_app/Logic/toast.dart';
+import 'package:futa_noise_app/screens/signup_page.dart';
 import 'package:gap/gap.dart';
 
 class SettingPage extends StatefulWidget {
@@ -34,6 +35,26 @@ class _SettingPageState extends State<SettingPage> {
             const Gap(30),
             GestureDetector(
               onTap: () {
+                
+              },
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.info,
+                    color: kPrimaryColour,
+                  ),
+                  Gap(8),
+                  Text(
+                    "About App",
+                    style: TextStyle(
+                        fontFamily: bold, fontSize: 16, color: kPrimaryColour),
+                  )
+                ],
+              ),
+            ),
+               const Gap(30),
+            GestureDetector(
+              onTap: () {
                 FirebaseAuth.instance.signOut();
                 Navigator.pushNamed(context, SignIn.id);
                 showToast(message: "Successfully signed out");
@@ -58,23 +79,26 @@ class _SettingPageState extends State<SettingPage> {
             ),
             const Gap(30),
             GestureDetector(
-              onTap: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.pushNamed(context, SignIn.id);
-                showToast(message: "Successfully signed out");
+              onTap: () async{
+              await  FirebaseAuth.instance.currentUser!.delete();
+                Navigator.pushNamed(context, SignUp.id);
+                showToast(message: "Account successfully deleted");
               },
               child: const Row(
                 children: [
                   Icon(
-                    Icons.info,
-                    color: kPrimaryColour,
+                    Icons.delete,
+                    color: kRedColour,
                   ),
                   Gap(8),
                   Text(
-                    "About App",
+                    "Delete Account",
                     style: TextStyle(
-                        fontFamily: bold, fontSize: 16, color: kPrimaryColour),
-                  )
+                      fontFamily: bold,
+                      fontSize: 16,
+                      color: kRedColour,
+                    ),
+                  ),
                 ],
               ),
             ),
